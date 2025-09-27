@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+      <link rel="icon" href="img/flowers.png" type="image/x-icon">
+  <title>Happy Birthday</title>
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg-a: #ffd6e3;
+      --bg-b: #ffb6cf;
+      --paper: #fff9fb;
+      --paper-edge: #ffe7ef;
+      --accent-a: #ff8fa3;
+      --accent-b: #ff6b81;
+      --text-dark: #5a2132;
+      --soft: rgba(91,22,48,0.06);
+    }
+    *{box-sizing:border-box}
+    html,body{ height:100%; margin:0; font-family:"Poppins",system-ui,-apple-system,"Segoe UI",Roboto,Arial; background: linear-gradient(180deg,var(--bg-a) 0%,var(--bg-b) 100%); color:var(--text-dark); -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; overflow:hidden; }
+
+    /* layout */
+    .wrap { min-height:100vh; display:flex; align-items:center; justify-content:center; padding:28px; position:relative; }
+
+    .stage {
+      width:100%;
+      max-width:980px;
+      text-align:center;
+      padding:28px;
+      border-radius:14px;
+      position:relative;
+      pointer-events:none; /* keep decorative children non-interactive, .paper handles interaction */
+      overflow:visible;
+    }
+
+    /* PAPER (selembar buku) */
+    .paper {
+      width: 78%;
+      max-width: 820px;
+      margin: 0 auto;
+      background: linear-gradient(180deg, var(--paper) 0%, #fff0f4 100%);
+      border-radius: 12px;
+      padding: 36px 32px;
+      box-shadow:
+        0 18px 40px rgba(91,22,48,0.09),
+        inset 0 1px 0 rgba(255,255,255,0.9);
+      border: 1px solid var(--paper-edge);
+      position: relative;
+      pointer-events: auto; /* allow buttons inside to be clickable */
+      background-image:
+        linear-gradient(transparent, transparent),
+        repeating-linear-gradient(0deg, rgba(0,0,0,0.01) 0px, rgba(0,0,0,0.01) 1px, transparent 1px, transparent 4px);
+      transition: opacity .6s ease, transform .6s ease;
+    }
+
+    .paper.fade-out { opacity: 0; transform: scale(.98); }
+
+    .paper::before{
+      content:'';
+      position:absolute;
+      right:18px;
+      top:14px;
+      width:72px;
+      height:48px;
+      background: linear-gradient(135deg, rgba(255,255,255,0.6), rgba(255,255,255,0.0));
+      transform: rotate(6deg);
+      opacity:0.25;
+      border-radius:6px;
+      pointer-events:none;
+    }
+
+    /* Title and message */
+    .title {
+      font-family: "Great Vibes", cursive;
+      font-size: clamp(40px, 6.4vw, 72px);
+      color: #5b1630;
+      margin: 0 0 8px 0;
+      line-height:1;
+      text-shadow: 0 6px 18px var(--soft);
+      pointer-events:none;
+      opacity:0;
+      transform: translateY(10px);
+      animation: introText .9s ease forwards .35s;
+    }
+
+    .message {
+      font-size: clamp(14px, 1.9vw, 20px);
+      color: #6f2a46;
+      margin: 12px auto 12px auto;
+      max-width:720px;
+      line-height:1.6;
+      pointer-events:none;
+      opacity:0;
+      transform: translateY(10px);
+      animation: introText .9s ease forwards .6s;
+    }
+
+    .signature {
+      margin-top:18px;
+      font-size:14px;
+      color: #7a3750;
+      font-style:italic;
+      pointer-events:none;
+      opacity:0;
+      transform: translateY(8px);
+      animation: introText .9s ease forwards .85s;
+    }
+
+    @keyframes introText {
+      to { opacity:1; transform: translateY(0); }
+    }
+
+    /* button under the card (navigasi file lain) */
+    .next-btn {
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      padding:12px 22px;
+      border-radius:30px;
+      font-weight:600;
+      font-size:16px;
+      color:white;
+      background: linear-gradient(90deg, var(--accent-a) 0%, var(--accent-b) 100%);
+      border:none;
+      box-shadow: 0 10px 30px rgba(255,105,150,0.16);
+      cursor:pointer;
+      text-decoration:none;
+      pointer-events:auto; /* ensure clickable */
+      transition: transform .18s ease, box-shadow .18s ease, opacity .18s;
+      margin-top:18px;
+    }
+    .next-btn:hover{ transform:translateY(-4px); box-shadow: 0 18px 40px rgba(255,105,150,0.22) }
+    .next-btn:active{ transform:translateY(1px) }
+
+    /* center stage (empty now, used for spacing) */
+    .center-stage {
+      margin-top:22px;
+      width:100%;
+      height:360px;
+      position:relative;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      pointer-events:none;
+    }
+
+    /* accessories: decorative pink items */
+    .accessory {
+      position:absolute;
+      width:48px;
+      height:48px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      pointer-events:none;
+      opacity:0.95;
+      will-change: transform, opacity;
+      transform-origin:center;
+      filter: drop-shadow(0 8px 18px rgba(200,50,100,0.12));
+      animation: floatAccessory ease-in-out infinite;
+    }
+    @keyframes floatAccessory {
+      0%{ transform: translateY(0) rotate(-6deg); }
+      50%{ transform: translateY(-12px) rotate(6deg); }
+      100%{ transform: translateY(0) rotate(-6deg); }
+    }
+    .acc.sm { width:36px; height:36px; font-size:18px; }
+    .acc.md { width:48px; height:48px; font-size:22px; }
+    .acc.lg { width:64px; height:64px; font-size:28px; }
+
+    /* falling love hearts */
+    .love {
+      position:absolute;
+      top:-10px;
+      font-size:20px;
+      pointer-events:none;
+      will-change: transform, opacity;
+      animation: fallLinear linear forwards;
+      filter: drop-shadow(0 6px 10px rgba(200,50,100,0.16));
+    }
+    @keyframes fallLinear {
+      0% { transform: translateY(-6vh) rotate(0deg); opacity:0; }
+      10% { opacity:1 }
+      100% { transform: translateY(110vh) rotate(360deg); opacity:0; }
+    }
+
+    /* replay button */
+    .replay {
+      position:absolute;
+      right:14px;
+      top:14px;
+      background: transparent;
+      border: none;
+      padding:8px;
+      border-radius:8px;
+      color: var(--text-dark);
+      cursor:pointer;
+      pointer-events: auto;
+      font-size:13px;
+      box-shadow: 0 6px 18px rgba(91,22,48,0.06);
+    }
+
+    /* responsive */
+    @media (max-width:820px){
+      .paper{ width:92%; padding:28px 20px }
+      .next-btn{ padding:10px 18px; font-size:15px }
+    }
+    @media (max-width:480px){
+      .center-stage{ height:260px }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <main class="stage" role="main" aria-labelledby="surpriseTitle">
+      <div class="paper" role="article" aria-label="Birthday message card">
+        <button id="replayBtn" class="replay" aria-label="Replay animation">⟲ Play Again</button>
+
+        <!-- Title changed to "Happy Birthday." -->
+        <h1 id="surpriseTitle" class="title">Happy Birthday.</h1>
+
+        <!-- Message text -->
+        <p id="messageText" class="message">
+         happy birthday sayang semoga dengan bertambah nya umur menjadi pribadi yang lebih baik lagi sehat mental dan fisik, dilancarkan rezekinya, di permudah segala urusan nya, semoga tujuan kita berdua cepat tercapai dan terima kasih memberikan cinta yang belum pernah di temui sebelum nyaa, ingat menyerah bukan solusi ketika dede merasa lelah tetap jadi orang baik ya meskipun orang-orang belum tentu memandang kita baik aku tetap di sini mendoakan dan selalu support usaha dede perlu di ingat juga ya jangan melakukan hal aneh meskipun aku jauh tidak mengetahui itu
+‎sekali lagi happy birthday sayanggggg🫂🤍
+        </p>
+
+        <p id="signature" class="signature">With all my love, <strong>— Dhika</strong></p>
+
+
+        <div style="margin-top:18px;">
+          <a id="nextBtn" class="next-btn" href="flower.html" role="button">Lihat Hadiah Selanjutnya</a>
+        </div>
+      </div>
+
+      <!-- center-stage kept for spacing / visual balance (no flowers) -->
+      <div class="center-stage" aria-hidden="true"></div>
+
+      <!-- 7 accessories placed around the paper (pink decorations) -->
+      <div class="accessory acc lg" style="left:6%; top:10%; animation-delay:.2s;">
+        <svg viewBox="0 0 64 64" width="46" height="46" aria-hidden="true"><path d="M32 6c6.6 0 12 5.4 12 12 0 7.5-12 22-12 22s-12-14.5-12-22C20 11.4 25.4 6 32 6z" fill="#ff8fa3"/><path d="M12 34c0 7.7 6.3 14 14 14s14-6.3 14-14" fill="#ff6b81" opacity="0.95"/></svg>
+      </div>
+
+      <div class="accessory acc md" style="left:82%; top:12%; animation-delay:.6s;">
+        <svg viewBox="0 0 64 64" width="40" height="40" aria-hidden="true"><path d="M32 54s-20-12.8-24-20c-3.9-6.4 0.8-14 8-14 5.6 0 8.6 3.5 8.6 3.5S32 16 39.4 23.4C46.8 30.8 56 36 56 36s-1 18-24 18z" fill="#ff81a6"/></svg>
+      </div>
+
+      <div class="accessory acc sm" style="left:12%; top:62%; animation-delay:1.0s;">
+        <svg viewBox="0 0 64 64" width="34" height="34" aria-hidden="true"><path d="M32 6l6 14 15 2-11 9 3 15-13-8-13 8 3-15-11-9 15-2z" fill="#ffd1da"/></svg>
+      </div>
+
+      <div class="accessory acc md" style="left:74%; top:68%; animation-delay:.3s;">
+        <svg viewBox="0 0 64 64" width="44" height="44" aria-hidden="true"><circle cx="32" cy="32" r="12" fill="#ff6b81"/><path d="M20 30c0-2.2 5-6 12-6s12 3.8 12 6-5 6-12 6S20 32.2 20 30z" fill="#ffb6cf" opacity="0.95"/></svg>
+      </div>
+
+      <div class="accessory acc md" style="left:48%; top:6%; animation-delay:1.2s;">
+        <svg viewBox="0 0 64 64" width="44" height="44" aria-hidden="true"><path d="M32 4l4 10 10 2-8 7 2 11-9-6-9 6 2-11-8-7 10-2z" fill="#ff9ab3"/></svg>
+      </div>
+
+      <div class="accessory acc sm" style="left:86%; top:78%; animation-delay:.9s;">
+        <svg viewBox="0 0 24 24" width="32" height="32" aria-hidden="true"><path d="M12 2c2.8 0 6 3.6 6 6.5S15.8 18 12 20 6 18 6 8.5 9.2 2 12 2z" fill="#ffc0cb"/></svg>
+      </div>
+
+      <div class="accessory acc md" style="left:4%; top:78%; animation-delay:.5s;">
+        <svg viewBox="0 0 64 64" width="44" height="44" aria-hidden="true"><path d="M20 36c4-8 14-10 22-4 2-6 2-10 2-10s-8 0-14 4S22 34 20 36z" fill="#ff8fa3"/><path d="M30 46c1 6 6 10 6 10s4-6 3-10" fill="#ff6b81"/></svg>
+      </div>
+    </main>
+  </div>
+
+  <!-- optional pop sound (place pop.mp3 in same folder if desired) -->
+  <audio id="popSound" src="pop.mp3" preload="auto"></audio>
+
+  <script>
+    // falling love generator with optional pop sound
+    const popSound = document.getElementById('popSound');
+    const heartPool = ["💖","🤍","💗","💞"];
+    let loveInterval;
+
+    function startLoveRain(){
+      loveInterval = setInterval(()=> {
+        const el = document.createElement('div');
+        el.className = 'love';
+        el.innerHTML = heartPool[Math.floor(Math.random()*heartPool.length)];
+        const left = Math.random() * 70 + 15;
+        el.style.left = left + 'vw';
+        el.style.fontSize = (Math.random()*18 + 18) + 'px';
+        const dur = (Math.random() * 2.4 + 3.2).toFixed(2);
+        el.style.animationDuration = dur + 's';
+        el.style.transform = 'translateY(0) rotate(' + (Math.random()*60-30) + 'deg)';
+        document.body.appendChild(el);
+
+        if(popSound && popSound.src){
+          try{
+            const s = popSound.cloneNode();
+            s.volume = 0.16 + Math.random()*0.12;
+            s.play().catch(()=>{});
+          }catch(e){}
+        }
+
+        setTimeout(()=> el.remove(), (parseFloat(dur) * 1000) + 300);
+      }, 260);
+    }
+
+    function stopLoveRain(){ clearInterval(loveInterval); }
+
+    // initialize accessory floats (randomize a bit)
+    document.querySelectorAll('.accessory').forEach((a,i)=>{
+      const d = (Math.random()*1.6).toFixed(2);
+      a.style.animationDelay = (0.2 + d*1) + 's';
+      a.style.opacity = 0.95;
+      a.style.animationDuration = (3.4 + Math.random()*1.8) + 's';
+    });
+
+    // start love rain on load after the intro text animates
+    window.addEventListener('load', ()=>{
+      setTimeout(()=> startLoveRain(), 900);
+    });
+
+    // replay: restart intro text animations and love rain
+    const replayBtn = document.getElementById('replayBtn');
+    const titleEl = document.getElementById('surpriseTitle');
+    const msgEl = document.getElementById('messageText');
+    const sigEl = document.getElementById('signature');
+
+    replayBtn.addEventListener('click', ()=>{
+      // clear existing hearts
+      document.querySelectorAll('.love').forEach(n=>n.remove());
+      stopLoveRain();
+
+      // restart css intro animations by toggling animation inline
+      titleEl.style.animation = 'none';
+      msgEl.style.animation = 'none';
+      sigEl.style.animation = 'none';
+      // force reflow
+      void titleEl.offsetWidth;
+
+      // re-apply animations with the same timings
+      titleEl.style.animation = 'introText .9s ease forwards .35s';
+      msgEl.style.animation = 'introText .9s ease forwards .6s';
+      sigEl.style.animation = 'introText .9s ease forwards .85s';
+
+      // restart love rain after short delay
+      setTimeout(()=> startLoveRain(), 900);
+    });
+
+    // enhanced navigation for the new button: add fade-out before navigating
+    const nextBtn = document.getElementById('nextBtn');
+    nextBtn.addEventListener('click', function(e){
+      // if it's an anchor with href, prevent immediate navigation to play fade
+      const href = this.getAttribute('href');
+      if(!href) return;
+      e.preventDefault();
+
+      // fade the paper then navigate
+      const paper = document.querySelector('.paper');
+      paper.classList.add('fade-out');
+
+      // stop hearts and accessories briefly
+      stopLoveRain();
+
+      setTimeout(()=> {
+        window.location.href = href;
+      }, 520); // delay matches .paper transition
+    });
+  </script>
+</body>
+</html>
